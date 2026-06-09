@@ -1,0 +1,6 @@
+[mcp_servers.nvim-mcp]
+command = "uvx"
+args = ["nvim-mcp"]
+
+[mcp_servers.nvim-mcp.env]
+NVIM_ADDRESS = "vex9z7.com:16667"
