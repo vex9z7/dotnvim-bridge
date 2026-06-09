@@ -11,6 +11,20 @@ The system SHALL provide a first-party wrapper MCP server that depends on upstre
 - **WHEN** a maintainer investigates wrapper behavior or prepares an upstream upgrade
 - **THEN** the project documentation identifies `https://github.com/paulburgess1357/nvim-mcp` commit `db73c3706c466a0f7740b693c3a23ea426287b97` as the inspected baseline
 
+### Requirement: Wrapper MCP server uses the documented Python package layout
+The system SHALL implement the wrapper as Python distribution `dotnvim-bridge` with console command `dotnvim-bridge` and import package `dotnvim_bridge` under `src/`.
+
+#### Scenario: Package layout is scaffolded
+- **WHEN** the implementation scaffold is created
+- **THEN** repository code intended for import lives under `src/dotnvim_bridge/`
+- **AND** MCP registration is owned by `src/dotnvim_bridge/server.py`
+- **AND** upstream `nvim_mcp` internals are isolated behind `src/dotnvim_bridge/session.py`
+- **AND** first-batch high-level tool implementations live under `src/dotnvim_bridge/tools/`
+
+#### Scenario: Tool modules remain decoupled from upstream internals
+- **WHEN** a high-level tool module such as `tools/messages.py` or `tools/lsp.py` is implemented
+- **THEN** it uses the local session adapter rather than importing upstream `nvim_mcp` internals directly
+
 ### Requirement: Wrapper MCP server preserves existing Neovim connection model
 The system SHALL use the same `NVIM_ADDRESS`-driven connection model as upstream `nvim-mcp` so the existing container-to-host TCP topology continues to work.
 

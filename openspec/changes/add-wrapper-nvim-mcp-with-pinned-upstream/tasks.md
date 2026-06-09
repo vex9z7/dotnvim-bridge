@@ -5,6 +5,7 @@
 - [ ] 1.3 Pin upstream dependency to `nvim-mcp==1.0.0`.
 - [ ] 1.4 Record upstream repository `https://github.com/paulburgess1357/nvim-mcp` and commit `db73c3706c466a0f7740b693c3a23ea426287b97` in package/docs metadata.
 - [ ] 1.5 Add a wrapper console script entrypoint.
+- [ ] 1.6 Scaffold the chosen `src/dotnvim_bridge/` package layout with `server.py`, `session.py`, `settings.py`, `errors.py`, `schemas.py`, `limits.py`, `lua_snippets.py`, and `tools/`.
 
 ## 2. Adapter Layer
 
@@ -36,7 +37,8 @@
 
 ## 6. Documentation and Codex Config
 
-- [ ] 6.1 Document direct upstream mode versus wrapper mode.
-- [ ] 6.2 Add a Codex MCP config example for launching the wrapper with `NVIM_ADDRESS=vex9z7.com:16667`.
-- [ ] 6.3 Document rollback to direct `uvx nvim-mcp` mode.
-- [ ] 6.4 Document the future upgrade process for moving beyond upstream commit `db73c3706c466a0f7740b693c3a23ea426287b97`.
+- [x] 6.1 Document the planned implementation directory structure in `docs/architecture.md`.
+- [ ] 6.2 Document direct upstream mode versus wrapper mode.
+- [ ] 6.3 Add a Codex MCP config example for launching the wrapper with `NVIM_ADDRESS=vex9z7.com:16667`.
+- [ ] 6.4 Document rollback to direct `uvx nvim-mcp` mode.
+- [ ] 6.5 Document the future upgrade process for moving beyond upstream commit `db73c3706c466a0f7740b693c3a23ea426287b97`.

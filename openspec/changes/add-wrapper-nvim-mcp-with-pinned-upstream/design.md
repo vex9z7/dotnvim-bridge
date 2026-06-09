@@ -77,10 +77,10 @@ The wrapper should avoid scattering direct upstream imports throughout tool impl
 Expected shape:
 
 ```text
-vex_nvim_mcp/server.py       FastMCP entrypoint and public tool declarations
-vex_nvim_mcp/session.py      adapter over upstream NeovimManager/NvimClient
-vex_nvim_mcp/lua_snippets.py high-level structured Lua snippets
-vex_nvim_mcp/schemas.py      response normalization helpers/types
+src/dotnvim_bridge/server.py       FastMCP entrypoint and public tool declarations
+src/dotnvim_bridge/session.py      adapter over upstream NeovimManager/NvimClient
+src/dotnvim_bridge/lua_snippets.py high-level structured Lua snippets
+src/dotnvim_bridge/schemas.py      response normalization helpers/types
 ```
 
 This keeps the future replacement path clear: if upstream internals become unsuitable, only `session.py` should need major changes.
@@ -93,13 +93,58 @@ The long-term architecture should keep the communication/RPC layer small and sta
 
 Alternative considered: put all high-level tools directly into the bridge core. Rejected because it makes the critical communication layer change too often and increases the chance of breaking the rescue path.
 
-### Decision 6: Prefer structured Lua for rich snapshots
+### Decision 6: Use a Python `src/` layout with one module per first-batch tool
+
+The wrapper will use this implementation layout:
+
+```text
+dotnvim-bridge/
+├── pyproject.toml
+├── src/
+│   └── dotnvim_bridge/
+│       ├── __init__.py
+│       ├── __main__.py
+│       ├── server.py
+│       ├── settings.py
+│       ├── session.py
+│       ├── errors.py
+│       ├── schemas.py
+│       ├── limits.py
+│       ├── lua_snippets.py
+│       └── tools/
+│           ├── __init__.py
+│           ├── debug_snapshot.py
+│           ├── messages.py
+│           ├── logs.py
+│           ├── lsp.py
+│           └── health.py
+└── tests/
+    ├── test_dependency_pin.py
+    ├── test_limits.py
+    ├── test_server_tools.py
+    └── test_session.py
+```
+
+Rationale:
+
+- `src/` layout avoids accidental imports from the repository root and catches packaging mistakes earlier.
+- `dotnvim_bridge` matches Python import naming conventions while keeping the distribution and command name `dotnvim-bridge`.
+- `server.py` stays thin and owns MCP registration only.
+- `session.py` is the only module that imports upstream `nvim_mcp` internals.
+- `tools/` modules own high-level workflows without owning transport/session setup.
+- `limits.py`, `schemas.py`, and `lua_snippets.py` keep response bounding, output shape, and ephemeral Lua snippets reusable.
+
+Alternative considered: flat root-level `dotnvim_bridge/`. Rejected because this project is intended to be packaged and tested as an installed/editable Python distribution.
+
+Alternative considered: put all tools in `server.py`. Rejected because it would make tool growth harder to review and would blur MCP registration, session management, and workflow logic.
+
+### Decision 7: Prefer structured Lua for rich snapshots
 
 High-level tools should use JSON-safe Lua results for state that Neovim can provide structurally, and only fall back to text command output where that is the native interface, such as `:messages` and `:checkhealth`.
 
 Alternative considered: parse human-oriented command output for everything. Rejected because it is brittle and harder for agents to consume reliably.
 
-### Decision 7: Keep first-batch tools read-oriented
+### Decision 8: Keep first-batch tools read-oriented
 
 The first wrapper tools are for debugging and config iteration insight. They should not save buffers, quit Neovim, or execute host shell commands. Mutation can remain available through upstream primitive tools in direct mode or be designed later as explicit wrapper tools.
 
