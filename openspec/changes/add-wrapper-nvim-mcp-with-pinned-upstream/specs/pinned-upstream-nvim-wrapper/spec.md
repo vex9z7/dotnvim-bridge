@@ -25,6 +25,20 @@ The system SHALL implement the wrapper as Python distribution `dotnvim-bridge` w
 - **WHEN** a high-level tool module such as `tools/messages.py` or `tools/lsp.py` is implemented
 - **THEN** it uses the local session adapter rather than importing upstream `nvim_mcp` internals directly
 
+
+### Requirement: MVP delegates low-level Neovim communication to pinned upstream nvim-mcp
+The system SHALL maximize reuse of pinned upstream `nvim-mcp==1.0.0` for low-level Neovim communication primitives during the MVP while keeping those imports isolated behind the local session adapter.
+
+#### Scenario: Communication layer remains thin
+- **WHEN** the MVP implements connection, command execution, Lua execution, state collection, diagnostics, or buffer reads
+- **THEN** it delegates to upstream `nvim-mcp` primitives where practical
+- **AND** local code only adapts inputs/outputs, applies limits, normalizes errors, and preserves the future replacement seam
+
+#### Scenario: Product behavior lives in high-level tools
+- **WHEN** a high-level workflow such as `get_debug_snapshot`, `get_logs_tail`, or `run_checkhealth` is implemented
+- **THEN** the workflow logic lives in `src/dotnvim_bridge/tools/` or shared local helper modules
+- **AND** it does not expand the communication/session layer beyond stable adapter responsibilities
+
 ### Requirement: Wrapper MCP server preserves existing Neovim connection model
 The system SHALL use the same `NVIM_ADDRESS`-driven connection model as upstream `nvim-mcp` so the existing container-to-host TCP topology continues to work.
 

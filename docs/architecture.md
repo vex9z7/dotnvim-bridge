@@ -88,6 +88,28 @@ Rationale:
 - It keeps implementation code separate from docs, examples, scripts, and OpenSpec material.
 - It allows tests to exercise the installed/editable package rather than accidentally importing root-level files.
 
+
+## MVP dependency strategy
+
+For the MVP, maximize reuse of pinned upstream `nvim-mcp==1.0.0`. The project should avoid prematurely reimplementing Neovim msgpack-RPC, discovery, connection retry, state collection, diagnostics, command execution, or buffer reads when upstream already provides a working primitive.
+
+The architectural intent is:
+
+```text
+thin stable communication layer
+  -> mostly delegates to pinned upstream nvim-mcp
+  -> owns only adaptation, error normalization, limits, and replacement seams
+
+business/tool layer
+  -> owns dotnvim-bridge behavior
+  -> implements high-level debug/config workflows
+  -> remains independent of upstream internals through session.py
+```
+
+This means `session.py` should be boring and small. Its job is not to become a second Neovim client implementation during MVP. Its job is to hide upstream details behind a local interface that can be replaced later.
+
+Replacement of upstream internals is a later phase and should happen behind the same `session.py` adapter API so the public MCP tools and `tools/` modules do not need to change.
+
 ## Module responsibilities
 
 ### `server.py`
@@ -106,6 +128,7 @@ Owns all direct coupling to upstream `nvim-mcp` internals:
 - imports upstream manager/client classes;
 - preserves the `NVIM_ADDRESS` connection contract;
 - exposes a small adapter API for command execution, Lua execution, state, diagnostics, buffer reads, and bounded text retrieval;
+- delegates to upstream `nvim-mcp` wherever practical during MVP instead of reimplementing transport primitives;
 - is the main replacement seam if upstream internals become unsuitable.
 
 No module under `tools/` should import upstream `nvim_mcp` internals directly.
@@ -169,5 +192,6 @@ NVIM_ADDRESS=vex9z7.com:16667 RUN_LIVE_NVIM_TESTS=1 pytest
 
 - Durable tool logic lives agent-side in `src/dotnvim_bridge/`.
 - Neovim-side Lua is allowed only as ephemeral RPC snippets.
-- The first implementation may reuse pinned upstream `nvim-mcp` internals, but direct imports must be isolated in `session.py`.
+- MVP implementation should reuse pinned upstream `nvim-mcp` internals as much as practical, but direct imports must be isolated in `session.py`.
+- Communication/session code should stay thin and stable; high-level behavior belongs in `tools/`.
 - First-batch tools are read-oriented: they must not save files, quit Neovim, or invoke host shell commands.

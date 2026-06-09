@@ -70,9 +70,11 @@ The proposal records commit `db73c3706c466a0f7740b693c3a23ea426287b97` as the in
 
 Alternative considered: record only the PyPI version. Rejected because source-level architecture decisions rely on repository files and may need exact commit comparison.
 
-### Decision 4: Reuse manager/client first, isolate access behind our own adapter
+### Decision 4: Reuse upstream nvim-mcp as much as practical during MVP, isolated behind our own adapter
 
-The wrapper should avoid scattering direct upstream imports throughout tool implementations. Instead, create a small internal adapter/session layer that owns interaction with upstream `nvim-mcp` classes. High-level tools call the adapter.
+For the MVP, the wrapper should maximize reuse of pinned upstream `nvim-mcp==1.0.0`. Do not prematurely reimplement Neovim msgpack-RPC, discovery, connection retry, state collection, diagnostics, command execution, or buffer reads when upstream already provides working primitives.
+
+The wrapper should still avoid scattering direct upstream imports throughout tool implementations. Instead, create a small internal adapter/session layer that owns interaction with upstream `nvim-mcp` classes. High-level tools call the adapter.
 
 Expected shape:
 
@@ -83,13 +85,13 @@ src/dotnvim_bridge/lua_snippets.py high-level structured Lua snippets
 src/dotnvim_bridge/schemas.py      response normalization helpers/types
 ```
 
-This keeps the future replacement path clear: if upstream internals become unsuitable, only `session.py` should need major changes.
+This keeps the future replacement path clear: if upstream internals become unsuitable, only `session.py` should need major changes. Until that replacement phase, `session.py` should stay thin, boring, and mostly delegating; business behavior belongs in the project tool layer.
 
 Alternative considered: each tool imports upstream `NeovimManager` directly. Rejected because it couples the high-level surface too tightly to upstream internals.
 
-### Decision 5: Separate thin bridge core from pluggable tools
+### Decision 5: Keep the communication layer thin and put product behavior in tools
 
-The long-term architecture should keep the communication/RPC layer small and stable, while letting high-level debug/config tools evolve as plugins or tool modules. This borrows the useful dynamic-tool concept from `linw1995/nvim-mcp`, but applies it on the agent side. Neovim-side dynamic tools are not part of this project route.
+The long-term architecture should keep the communication/RPC layer small and stable, while letting high-level debug/config tools evolve as plugins or tool modules. The durable product value of `dotnvim-bridge` is the agent-side tool layer, not a custom msgpack-RPC implementation. This borrows the useful dynamic-tool concept from `linw1995/nvim-mcp`, but applies it on the agent side. Neovim-side dynamic tools are not part of this project route.
 
 Alternative considered: put all high-level tools directly into the bridge core. Rejected because it makes the critical communication layer change too often and increases the chance of breaking the rescue path.
 
@@ -130,8 +132,8 @@ Rationale:
 - `src/` layout avoids accidental imports from the repository root and catches packaging mistakes earlier.
 - `dotnvim_bridge` matches Python import naming conventions while keeping the distribution and command name `dotnvim-bridge`.
 - `server.py` stays thin and owns MCP registration only.
-- `session.py` is the only module that imports upstream `nvim_mcp` internals.
-- `tools/` modules own high-level workflows without owning transport/session setup.
+- `session.py` is the only module that imports upstream `nvim_mcp` internals and should mostly delegate during MVP.
+- `tools/` modules own high-level workflows and product behavior without owning transport/session setup.
 - `limits.py`, `schemas.py`, and `lua_snippets.py` keep response bounding, output shape, and ephemeral Lua snippets reusable.
 
 Alternative considered: flat root-level `dotnvim_bridge/`. Rejected because this project is intended to be packaged and tested as an installed/editable Python distribution.
