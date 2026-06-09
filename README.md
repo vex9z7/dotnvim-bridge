@@ -42,10 +42,11 @@ The MVP target is a first-party wrapper MCP with pinned `nvim-mcp==1.0.0` and hi
 1. [Core requirements](docs/core-requirements.md)
 2. [Roadmap](docs/roadmap.md)
 3. [Architecture and directory structure](docs/architecture.md)
-4. [Project assessment](docs/project-assessment.md)
-5. [Setup](docs/setup.md)
-6. [Debug recipes](docs/debug-recipes.md)
-7. [Capability boundary](docs/capability-boundary.md)
+4. [Development tooling](docs/development-tooling.md)
+5. [Project assessment](docs/project-assessment.md)
+6. [Setup](docs/setup.md)
+7. [Debug recipes](docs/debug-recipes.md)
+8. [Capability boundary](docs/capability-boundary.md)
 
 ## Active OpenSpec change
 
