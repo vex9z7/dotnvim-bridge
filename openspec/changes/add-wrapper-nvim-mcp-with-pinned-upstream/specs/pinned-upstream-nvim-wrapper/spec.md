@@ -1,5 +1,19 @@
 ## ADDED Requirements
 
+
+### Requirement: MVP is publishable as a Python package
+The system SHALL produce an installable Python distribution named `dotnvim-bridge` with a console command named `dotnvim-bridge`.
+
+#### Scenario: Package exposes a runnable MCP server
+- **WHEN** the package is installed in a Python environment
+- **THEN** the `dotnvim-bridge` command is available
+- **AND** running the command starts the wrapper MCP server
+
+#### Scenario: MVP implementation remains intentionally thin
+- **WHEN** a low-level behavior is already handled by pinned upstream `nvim-mcp==1.0.0`
+- **THEN** the MVP delegates that behavior rather than reimplementing it locally
+- **AND** local implementation focuses on adapter boundaries, limits, error normalization, schemas, and high-level tool workflows
+
 ### Requirement: Wrapper MCP server uses pinned upstream nvim-mcp
 The system SHALL provide a first-party wrapper MCP server that depends on upstream `nvim-mcp==1.0.0` and records the corresponding upstream repository commit `db73c3706c466a0f7740b693c3a23ea426287b97` as the source-code reference baseline.
 

@@ -28,7 +28,7 @@ The inspected upstream package metadata reports `nvim-mcp` version `1.0.0`. The 
 
 **Goals:**
 
-- Build a first-party MCP wrapper package, named `dotnvim-bridge`.
+- Build and prepare to publish a first-party Python MCP wrapper package, named `dotnvim-bridge`.
 - Use upstream `nvim-mcp==1.0.0` as a pinned dependency.
 - Record the upstream source commit used for design/reference to reduce API-drift ambiguity.
 - Expose the first high-level debug tools:
@@ -51,6 +51,21 @@ The inspected upstream package metadata reports `nvim-mcp` version `1.0.0`. The 
 - Do not publish to PyPI until local/package behavior is validated.
 
 ## Decisions
+
+
+### Decision 0: MVP is a publishable Python package with basic working tools
+
+The MVP target is an installable Python distribution named `dotnvim-bridge`, with a console command of the same name. The package should expose a working MCP server and the first batch of high-level Neovim debug tools.
+
+The MVP should not attempt to own every implementation detail. Where pinned upstream `nvim-mcp==1.0.0` already handles low-level communication, discovery, connection retry, command execution, Lua execution, diagnostics, and buffer reads, this project should delegate rather than reimplement.
+
+The project should implement only the necessary wrapper pieces:
+
+- package metadata and console entrypoint;
+- thin session adapter;
+- response limits and error normalization;
+- high-level tool workflows and schemas;
+- tests proving the wrapper behavior and dependency pin.
 
 ### Decision 1: Build a wrapper MCP, not a fork
 

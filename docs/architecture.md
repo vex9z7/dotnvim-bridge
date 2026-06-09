@@ -89,6 +89,29 @@ Rationale:
 - It allows tests to exercise the installed/editable package rather than accidentally importing root-level files.
 
 
+
+## MVP release goal
+
+The MVP goal is to publish an installable Python package named `dotnvim-bridge` that provides a working MCP server with the first batch of high-level Neovim debug tools.
+
+The package should be usable through normal Python package flows, for example:
+
+```bash
+uvx dotnvim-bridge
+# or, during local development:
+uv run dotnvim-bridge
+```
+
+MVP scope is intentionally narrow:
+
+- provide a real Python distribution and console command;
+- expose basic high-level tools that are useful immediately;
+- keep the implementation thin where upstream `nvim-mcp==1.0.0` already handles details well;
+- implement only the necessary adapter, response shaping, limits, and tool workflow code in this repository;
+- defer owning low-level Neovim RPC/discovery/session details until a later replacement phase.
+
+Success for the MVP is not a complete custom Neovim client. Success is a published, usable wrapper package whose public tool layer is stable enough to iterate on.
+
 ## MVP dependency strategy
 
 For the MVP, maximize reuse of pinned upstream `nvim-mcp==1.0.0`. The project should avoid prematurely reimplementing Neovim msgpack-RPC, discovery, connection retry, state collection, diagnostics, command execution, or buffer reads when upstream already provides a working primitive.

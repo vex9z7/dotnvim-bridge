@@ -1,12 +1,13 @@
 ## 1. Package Scaffold
 
 - [x] 1.1 Use `dotnvim-bridge` as the final wrapper distribution and command name, with `dotnvim_bridge` as the Python import package.
-- [ ] 1.2 Add Python package metadata for the wrapper MCP package.
+- [ ] 1.2 Add Python package metadata for the publishable wrapper MCP package.
 - [ ] 1.3 Pin upstream dependency to `nvim-mcp==1.0.0`.
 - [ ] 1.4 Record upstream repository `https://github.com/paulburgess1357/nvim-mcp` and commit `db73c3706c466a0f7740b693c3a23ea426287b97` in package/docs metadata.
 - [ ] 1.5 Add a wrapper console script entrypoint.
 - [ ] 1.6 Scaffold the chosen `src/dotnvim_bridge/` package layout with `server.py`, `session.py`, `settings.py`, `errors.py`, `schemas.py`, `limits.py`, `lua_snippets.py`, and `tools/`.
 - [ ] 1.7 Add MVP development tooling in `pyproject.toml`: `ruff`, `pytest`, `pytest-asyncio`, `pytest-cov`, `basedpyright`, and `pre-commit`.
+- [ ] 1.8 Verify the package can be built into wheel/sdist artifacts with `uv build`.
 
 ## 2. Adapter Layer
 

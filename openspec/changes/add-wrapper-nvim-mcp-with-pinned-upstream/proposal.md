@@ -6,8 +6,8 @@ The current recipe-based `nvim-mcp` workflow proves that Codex can inspect and c
 
 ## What Changes
 
-- Introduce a new first-party wrapper MCP package, named `dotnvim-bridge`.
-- Implement the wrapper using **方案 A**: depend on upstream `nvim-mcp` and reuse its Python manager/client layer instead of forking or replacing the bottom layer at this stage.
+- Introduce a new first-party Python wrapper MCP package, named `dotnvim-bridge`, intended to become a publishable package with a `dotnvim-bridge` console command.
+- Implement the wrapper using **方案 A**: depend on upstream `nvim-mcp` and reuse its Python manager/client layer instead of forking or replacing the bottom layer at this stage. The MVP should stay thin and implement only the wrapper/tool behavior that is necessary.
 - Pin the upstream dependency to a known-good release:
   - package: `nvim-mcp==1.0.0`
   - upstream repository: `https://github.com/paulburgess1357/nvim-mcp`
