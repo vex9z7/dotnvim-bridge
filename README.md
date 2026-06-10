@@ -23,9 +23,9 @@ Do not implement the project tool layer as Neovim-side dynamic tools.
 
 Neovim-side Lua can be sent as ephemeral RPC snippets, but the durable tools live agent-side.
 
-## Current baseline
+## Current status
 
-The current working baseline uses upstream `paulburgess1357/nvim-mcp` directly:
+The confirmed external baseline uses upstream `paulburgess1357/nvim-mcp` directly:
 
 ```text
 Codex CLI inside container
@@ -35,18 +35,19 @@ Codex CLI inside container
   -> host Neovim --listen 0.0.0.0:16667
 ```
 
-The MVP target is a first-party wrapper MCP with pinned `nvim-mcp==1.0.0` and high-level agent-side tools.
+The repository now contains the first Python package scaffold for the wrapper MCP, with pinned `nvim-mcp==1.0.0`, initial high-level tools, tests, and package build validation. Direct upstream mode remains the rollback/baseline path.
 
 ## Read next
 
 1. [Core requirements](docs/core-requirements.md)
-2. [Roadmap](docs/roadmap.md)
-3. [Architecture and directory structure](docs/architecture.md)
-4. [Development tooling](docs/development-tooling.md)
+2. [Current architecture](docs/architecture.md)
+3. [Development tooling](docs/development-tooling.md)
+4. [Roadmap](docs/roadmap.md)
 5. [Project assessment](docs/project-assessment.md)
 6. [Setup](docs/setup.md)
 7. [Debug recipes](docs/debug-recipes.md)
 8. [Capability boundary](docs/capability-boundary.md)
+9. [Candidate three-layer Lua tool architecture](docs/notes-three-layer-lua-tool-architecture.md)
 
 ## Active OpenSpec change
 

@@ -1,8 +1,9 @@
 # Development Tooling
 
-Date: 2026-06-09
+Date: 2026-06-10
+Status: current MVP development toolchain
 
-This document records the planned development toolchain for `dotnvim-bridge` before implementation scaffolding begins.
+This document records the development toolchain used by the current `dotnvim-bridge` MVP package scaffold.
 
 ## Goals
 
@@ -238,7 +239,7 @@ Future guardrails to consider after implementation starts:
 - high-confidence dead-code check;
 - OpenSpec validation as part of `make check`.
 
-## Initial dependency plan
+## Dependency plan
 
 Runtime dependencies:
 
@@ -263,9 +264,7 @@ dev = [
 ]
 ```
 
-## Planned local workflow
-
-After `pyproject.toml` is added:
+## Local workflow
 
 ```bash
 uv sync --dev
